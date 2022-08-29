@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Luminoslabs\OroRealTimePricing\:
+    resource: '../../*'
+    exclude: '../../{DependencyInjection,Entity}'
+
+  oro_pricing.provider.product_price:
+    class: 'Luminoslabs\OroRealTimePricing\Provider\RealTimeProductPriceProvider'
+    arguments:
+      - '@oro_pricing.storage.prices'
+      - '@oro_pricing.user_currency_manager'
+      - '@Luminoslabs\OroRealTimePricing\Provider\ApiProvider'
+    calls:
+      - [setMemoryCacheProvider, ['@oro_pricing.provider.product_price.cache']]

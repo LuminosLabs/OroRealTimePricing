@@ -1,0 +1,18 @@
+{
+    "name": "luminoslabs/oro-real-time-pricing",
+    "description": "oro-real-time-pricing",
+    "type": "bundle",
+    "autoload": {
+        "psr-4": {
+            "Luminoslabs\\OroRealTimePricing\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andrei Tomita",
+            "email": "andrei.tomita@luminoslabs.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}

@@ -12,6 +12,6 @@ services:
     arguments:
       - '@oro_pricing.storage.prices'
       - '@oro_pricing.user_currency_manager'
-      - '@Luminoslabs\OroRealTimePricing\Provider\ApiProvider'
+      - !tagged_iterator real_time.pricing.provider
     calls:
       - [setMemoryCacheProvider, ['@oro_pricing.provider.product_price.cache']]

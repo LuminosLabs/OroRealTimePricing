@@ -28,11 +28,17 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
      */
     protected $currencyManager;
 
+    protected ApiProviderInterface $apiProvider;
+
     public function __construct(
-        ProductPriceStorageInterface $priceStorage,
-        UserCurrencyManager          $currencyManager,
-        protected ApiProvider        $apiProvider,
-    ) {
+        ProductPriceStorageInterface   $priceStorage,
+        UserCurrencyManager            $currencyManager,
+        iterable $apiProviders,
+    )
+    {
+        // TODO: beter logic to handle multiple price providers or no price providers
+        $this->apiProvider = iterator_to_array($apiProviders)[0];
+
         $this->priceStorage = $priceStorage;
         $this->currencyManager = $currencyManager;
     }
@@ -92,10 +98,11 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
      */
     protected function getPrices(
         ProductPriceScopeCriteriaInterface $scopeCriteria,
-        array $productsIds,
-        array $productUnitCodes = null,
-        array $currencies = null
-    ): array {
+        array                              $productsIds,
+        array                              $productUnitCodes = null,
+        array                              $currencies = null
+    ): array
+    {
         if (!$currencies) {
             // There is no sense to get prices when no allowed currencies present.
             return [];
@@ -111,9 +118,10 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
      * @return Price[]
      */
     public function getMatchedPrices(
-        array $productPriceCriteria,
+        array                              $productPriceCriteria,
         ProductPriceScopeCriteriaInterface $scopeCriteria
-    ): array {
+    ): array
+    {
         return $this->getActualMatchedPrices($productPriceCriteria, $scopeCriteria);
     }
 
@@ -124,9 +132,10 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
      * @return Price[]
      */
     protected function getActualMatchedPrices(
-        array $productPriceCriteria,
+        array                              $productPriceCriteria,
         ProductPriceScopeCriteriaInterface $scopeCriteria
-    ): array {
+    ): array
+    {
         $productsIds = [];
         $productUnitCodes = [];
         $currencies = [];

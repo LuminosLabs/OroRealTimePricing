@@ -1,0 +1,9 @@
+datagrids:
+  frontend-customer-user-shopping-list-grid:
+    options:
+      jsmodules:
+        - realtime/js/app/datagrid/real-time-prices
+  frontend-checkout-line-items-grid:
+    options:
+      jsmodules:
+        - realtime/js/app/datagrid/real-time-prices

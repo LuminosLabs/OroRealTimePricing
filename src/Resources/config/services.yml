@@ -12,6 +12,17 @@ services:
     arguments:
       - '@oro_pricing.storage.prices'
       - '@oro_pricing.user_currency_manager'
+      - '@oro_config.manager'
       - !tagged_iterator real_time.pricing.provider
     calls:
       - [setMemoryCacheProvider, ['@oro_pricing.provider.product_price.cache']]
+
+  Luminoslabs\OroRealTimePricing\Controller\Frontend\AjaxRealTimePricesController:
+    arguments:
+      - !tagged_iterator real_time.pricing.provider
+
+  Luminoslabs\OroRealTimePricing\Service\PricesHelper:
+    arguments:
+      - '@oro_locale.formatter.number'
+      - '@oro_product.formatter.product_unit_value'
+      - '@oro_product.formatter.product_unit_label'

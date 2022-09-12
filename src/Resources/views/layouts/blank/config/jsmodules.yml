@@ -1,0 +1,16 @@
+dynamic-imports:
+  realtime:
+    - realtime/js/app/views/list-item-product-prices-view
+    - realtime/js/app/datagrid/real-time-prices
+    - realtime/js/app/components/totals-component
+
+map:
+  '*':
+    'oropricing/js/app/views/list-item-product-prices-view': 'realtime/js/app/views/list-item-product-prices-view'
+    'oropricing/js/app/components/totals-component': 'realtime/js/app/components/totals-component'
+
+  'realtime/js/app/views/list-item-product-prices-view':
+    'oropricing/js/app/views/list-item-product-prices-view': 'oropricing/js/app/views/list-item-product-prices-view'
+
+  'realtime/js/app/components/totals-component':
+    'oropricing/js/app/components/totals-component': 'oropricing/js/app/components/totals-component'

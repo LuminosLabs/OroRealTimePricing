@@ -2,7 +2,9 @@
 
 namespace Luminoslabs\OroRealTimePricing\Provider;
 
+use Luminoslabs\OroRealTimePricing\DependencyInjection\Configuration;
 use Oro\Bundle\CacheBundle\Provider\MemoryCacheProviderAwareTrait;
+use Oro\Bundle\ConfigBundle\Config\ConfigManager;
 use Oro\Bundle\CurrencyBundle\Entity\Price;
 use Oro\Bundle\PricingBundle\Manager\UserCurrencyManager;
 use Oro\Bundle\PricingBundle\Model\DTO\ProductPriceDTO;
@@ -18,29 +20,28 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
 {
     use MemoryCacheProviderAwareTrait;
 
-    /**
-     * @var ProductPriceStorageInterface
-     */
-    protected $priceStorage;
-
-    /**
-     * @var UserCurrencyManager
-     */
-    protected $currencyManager;
-
     protected ApiProviderInterface $apiProvider;
 
     public function __construct(
-        ProductPriceStorageInterface   $priceStorage,
-        UserCurrencyManager            $currencyManager,
-        iterable $apiProviders,
+        protected ProductPriceStorageInterface $priceStorage,
+        protected UserCurrencyManager          $currencyManager,
+        protected ConfigManager                $configManager,
+        iterable                               $apiProviders,
     )
     {
-        // TODO: beter logic to handle multiple price providers or no price providers
         $this->apiProvider = iterator_to_array($apiProviders)[0];
+    }
 
-        $this->priceStorage = $priceStorage;
-        $this->currencyManager = $currencyManager;
+    /**
+     * @return mixed|null
+     */
+    public function isActive()
+    {
+        return $this->configManager->get(
+            Configuration::getConfigurationName(
+                Configuration::ENABLE_BACKEND
+            )
+        );
     }
 
     /**
@@ -108,7 +109,27 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
             return [];
         }
 
-        return $this->apiProvider->getPrices($scopeCriteria, $productsIds, $productUnitCodes, $currencies);
+        return ($this->isActive()) ?
+            $this->apiProvider->getPrices($scopeCriteria, $productsIds, $productUnitCodes, $currencies) :
+            $this->getCachedPrices($scopeCriteria, $productsIds, $currencies, $productUnitCodes);
+    }
+
+    private function getCachedPrices($scopeCriteria, $productsIds, $currencies, $productUnitCodes)
+    {
+        return (array)$this->getMemoryCacheProvider()->get(
+            [
+                'product_price_scope_criteria' => $scopeCriteria,
+                $productsIds,
+                $currencies,
+                $productUnitCodes,
+            ],
+            function () use ($scopeCriteria, $productsIds, $productUnitCodes, $currencies) {
+                $prices = $this->priceStorage->getPrices($scopeCriteria, $productsIds, $productUnitCodes, $currencies);
+                $this->sortPrices($prices);
+
+                return $prices;
+            }
+        );
     }
 
     /**

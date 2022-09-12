@@ -1,0 +1,7 @@
+real_time_ajax:
+  resource: "@RealTimeBundle/Controller/Frontend/AjaxRealTimePricesController.php"
+  type: annotation
+  prefix: /realtime
+  options:
+    frontend: true
+    expose: true

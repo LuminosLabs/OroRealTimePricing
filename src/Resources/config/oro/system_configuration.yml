@@ -1,0 +1,38 @@
+system_configuration:
+    groups:
+        luminoslabs_realtime_price_section:
+            icon: fa-building
+            title: 'Real Time Price'
+
+        luminoslabs_realtime_price_settings:
+            title: 'Settings'
+
+    fields:
+        real_time.enable_backend:
+            data_type: string
+            ui_only: true
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
+            options:
+                label: 'Enable Backend Prices'
+                resettable: false
+        real_time.enable_frontend:
+            data_type: string
+            ui_only: true
+            type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
+            options:
+                label: 'Enable Frontend Prices'
+                resettable: false
+
+
+    tree:
+        system_configuration:
+            platform:
+                children:
+                    integrations:
+                        children:
+                            luminoslabs_realtime_price_section:
+                                children:
+                                    luminoslabs_realtime_price_settings:
+                                        children:
+                                            - real_time.enable_backend
+                                            - real_time.enable_frontend

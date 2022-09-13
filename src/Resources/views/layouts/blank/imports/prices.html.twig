@@ -1,0 +1,66 @@
+{% block product_price_component %}
+    {% if not is_configurable_product_type(product.type) or matrixFormType == 'none' %}
+        {% set attr = layout_attr_defaults(attr, {
+            'data-page-component-module': 'oroui/js/app/components/view-component',
+            '~data-page-component-options': {
+                view: 'oropricing/js/app/views/list-item-product-prices-view',
+                realTimePricesEnabled: realTimePricesEnabled,
+                showValuePrice: showValuePrice,
+                showListedPrice: showListedPrice,
+                modelAttr: {
+                    prices: productPrices,
+                }
+            }
+        }) %}
+    {% endif %}
+    {% if productPrices is not empty or forceComponentRender %}
+        {% set attr = layout_attr_defaults(attr, {
+            '~class': ' product-price__main'
+        }) %}
+        <div {{ block('block_attributes') }}>
+            {{ block_widget(block) }}
+        </div>
+    {% else %}
+        {{ block('product_price_not_found') }}
+    {% endif %}
+{% endblock %}
+
+{% block product_price_table %}
+    {% set attr = layout_attr_defaults(attr, {
+        '~class': ' product-prices'
+    }) %}
+
+    {% if not is_configurable_product_type(product.type) or matrixFormType|default(false) == 'none' %}
+        {# Use to modify quantity in case when it not enough quantity to show the price #}
+        {# We use this component as single entry point for price extendability #}
+        {% set attr = layout_attr_defaults(attr, {
+            'data-page-component-module': 'oroui/js/app/components/view-component',
+            '~data-page-component-options': {
+                view: 'oropricing/js/app/views/list-item-product-prices-view',
+                realTimePricesEnabled: realTimePricesEnabled,
+                showValuePrice: false,
+                showListedPrice: false,
+                showHint: false,
+                modelAttr: {
+                    prices: productPrices,
+                }
+            },
+        }) %}
+    {% endif %}
+
+    {% if productPrices is not empty %}
+        <div {{ block('block_attributes') }}>
+            <table class="product-prices__table">
+                <thead class="product-prices__thead">
+                <tr class="product-prices__tr">
+                    <th style="width: 40%"
+                        class="product-prices__th text-uppercase">{{ 'oro.pricing.frontend.product.quantity.short_label'|trans }}</th>{# qty #}
+                    <th style="width: 60%"
+                        class="product-prices__th">{{ 'oro.pricing.frontend.product.unit_price.long_label'|trans }}</th>{# Unit Price #}
+                </tr>
+                </thead>
+                {{ block_widget(block) }}
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -15,6 +15,7 @@ use Oro\Bundle\PricingBundle\Provider\ProductPriceProviderInterface;
 use Oro\Bundle\PricingBundle\Storage\ProductPriceStorageInterface;
 use Oro\Bundle\ProductBundle\Entity\MeasureUnitInterface;
 use Oro\Bundle\ProductBundle\Entity\Product;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class RealTimeProductPriceProvider implements ProductPriceProviderInterface
 {
@@ -39,7 +40,7 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
     {
         return $this->configManager->get(
             Configuration::getConfigurationName(
-                Configuration::ENABLE_BACKEND
+                Configuration::ENABLE
             )
         );
     }

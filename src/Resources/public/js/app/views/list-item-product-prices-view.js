@@ -5,21 +5,23 @@ define(function(require) {
     const routing = require('routing');
 
     const ListItemProductPricesView = BaseListItemProductPricesView.extend({
-
-        constructor: function ListItemProductPricesView(options) {
-            ListItemProductPricesView.__super__.constructor.call(this, options);
-            console.log('construct')
-        },
-
         productIds: [],
 
         timeout: null,
 
         realTimePricesRoute: 'real_time_frontend_price',
 
+        constructor: function ListItemProductPricesView(options) {
+            ListItemProductPricesView.__super__.constructor.call(this, options);
+        },
+
         initialize: function(options) {
-            console.log('init')
             BaseListItemProductPricesView.prototype.initialize.call(this, options);
+
+            if (!options.realTimePricesEnabled) {
+                return;
+            }
+
             if (this.model.get('id')) {
                 this.storeId(this.model.get('id'));
             }
@@ -30,6 +32,7 @@ define(function(require) {
 
         updatePrice: function(prices) {
             this.model.set('prices', prices);
+
             this.render();
         },
 
@@ -37,9 +40,15 @@ define(function(require) {
             if (!ListItemProductPricesView.productIds) {
                 ListItemProductPricesView.productIds = {};
             }
+
             if (!Object.keys(ListItemProductPricesView.productIds).includes(id)) {
-                ListItemProductPricesView.productIds[id] = this.updatePrice.bind(this);
+                if (!ListItemProductPricesView.productIds[id]) {
+                    ListItemProductPricesView.productIds[id] = [];
+                }
+
+                ListItemProductPricesView.productIds[id].push(this.updatePrice.bind(this));
             }
+
             this.checkIfDone(id);
         },
 
@@ -48,20 +57,25 @@ define(function(require) {
                 clearTimeout(ListItemProductPricesView.timeout);
                 ListItemProductPricesView.timeout = null;
             }
-            ListItemProductPricesView.timeout = setTimeout(() => {
-                const params = {
-                    product_ids: Object.keys(ListItemProductPricesView.productIds)
-                };
-                const URL = routing.generate(this.realTimePricesRoute, params);
-                fetch(URL)
-                    .then(response => response.json())
-                    .then(data => {
-                        for (id in data) {
-                            const prices = data[id];
-                            ListItemProductPricesView.productIds[id](prices);
-                        }
-                    });
-            }, 500);
+
+            if (Object.keys(ListItemProductPricesView.productIds).length > 0) {
+                ListItemProductPricesView.timeout = setTimeout(() => {
+                    const params = {
+                        product_ids: Object.keys(ListItemProductPricesView.productIds)
+                    };
+                    const URL = routing.generate(this.realTimePricesRoute, params);
+                    fetch(URL)
+                        .then(response => response.json())
+                        .then(data => {
+                            for (let id in data) {
+                                const prices = data[id];
+                                for (let index in ListItemProductPricesView.productIds[id]) {
+                                    ListItemProductPricesView.productIds[id][index](prices);
+                                }
+                            }
+                        });
+                }, 500);
+            }
         }
     });
 

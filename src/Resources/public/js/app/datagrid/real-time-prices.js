@@ -3,6 +3,7 @@ define(function(require) {
 
     const BaseComponent = require('oroui/js/app/components/base/component');
     const routing = require('routing');
+    const mediator = require('oroui/js/mediator');
 
     const RealTimePrices = BaseComponent.extend({
 
@@ -34,6 +35,7 @@ define(function(require) {
             if (this.datagrid.rendered) {
                 this.updatePrices();
             }
+
             // for price update from FE
             this.datagrid.on('content:update', this.updatePrices, this);
 
@@ -42,6 +44,7 @@ define(function(require) {
         updatePrices: function() {
             const lineItemModels = this.datagrid.collection.models;
             const productQuantities = {};
+
             lineItemModels.forEach(lineItemModel => {
                 const productId = lineItemModel.get('productId');
                 const lineItemModelId = lineItemModel.get('id');
@@ -59,10 +62,9 @@ define(function(require) {
                 .then(response => response.json())
                 .then(pricesData => {
                     // for totals-component
-                    window.realTimePricesTotals = {
-                        total_value: pricesData['totals']['total_value'],
-                        total: pricesData['totals']['total']
-                    };
+                    window.realTimePricesTotals = pricesData.totals;
+                    mediator.trigger('real-time-prices-update', pricesData.totals)
+
                     this.setPrices(pricesData);
                 });
         },

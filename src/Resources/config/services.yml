@@ -20,9 +20,16 @@ services:
   Luminoslabs\OroRealTimePricing\Controller\Frontend\AjaxRealTimePricesController:
     arguments:
       - !tagged_iterator real_time.pricing.provider
+      - '@oro_pricing.model.product_price_scope_criteria_request_handler'
 
   Luminoslabs\OroRealTimePricing\Service\PricesHelper:
     arguments:
       - '@oro_locale.formatter.number'
       - '@oro_product.formatter.product_unit_value'
       - '@oro_product.formatter.product_unit_label'
+
+  Luminoslabs\OroRealTimePricing\Provider\RealTimePricesConfigProvider:
+    arguments:
+      - '@oro_config.manager'
+    tags:
+      - { name: layout.data_provider, alias: real_time_prices_config_provider }

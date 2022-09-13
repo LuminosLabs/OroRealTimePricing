@@ -8,11 +8,10 @@ use Oro\Bundle\ConfigBundle\DependencyInjection\SettingsBuilder;
 
 class Configuration implements ConfigurationInterface
 {
-    public const ENABLE_BACKEND = 'enable_backend';
-    public const ENABLE_FRONTEND = 'enable_frontend';
-
     public const ALIAS = 'real_time';
 
+    public const ENABLE = 'enable';
+    public const FRONTEND_ENABLE = 'frontend_enable';
 
     public function __construct(
         private string $alias
@@ -27,8 +26,9 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder($this->alias);
 
         SettingsBuilder::append($treeBuilder->getRootNode(), [
-            self::ENABLE_BACKEND    => ['type' => 'boolean', 'value' => true],
-            self::ENABLE_FRONTEND   => ['type' => 'boolean', 'value' => true],
+            self::ENABLE    => ['type' => 'boolean', 'value' => true],
+            self::FRONTEND_ENABLE   => ['type' => 'boolean', 'value' => false],
+
         ]);
 
         return $treeBuilder;

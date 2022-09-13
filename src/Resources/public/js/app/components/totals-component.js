@@ -2,6 +2,7 @@ define(function(require) {
     'use strict';
 
     const BaseTotalsComponent = require('oropricing/js/app/components/totals-component');
+    const mediator = require('oroui/js/mediator');
 
     const RealtimeTotalsComponent = BaseTotalsComponent.extend({
 
@@ -11,30 +12,32 @@ define(function(require) {
 
         initialize: function(options) {
             RealtimeTotalsComponent.__super__.initialize.call(this, options);
+
+            mediator.on('real-time-prices-update', this.updateTotals, this);
+
             if (window.realTimePricesTotals) {
-                this.updateTotals();
+                this.updateTotals(window.realTimePricesTotals);
             }
         },
         /**
          * Get and render totals
          */
-        updateTotals: function(e) {
+        updateTotals: function(realTimeTotals) {
             this.showLoadingMask();
-            const totalValue = window.realTimePricesTotals['total_value'];
-            const total = window.realTimePricesTotals['total'];
+
             let totals = {
                 subtotals: [{
-                    amount: totalValue,
-                    signedAmount: totalValue,
-                    formattedAmount: total,
+                    amount: realTimeTotals.total_value,
+                    signedAmount: realTimeTotals.total_value,
+                    formattedAmount: realTimeTotals.total,
                     label: 'Subtotal',
                     type: 'subtotal',
                     visible: true
                 }],
                 total: {
-                    amount: totalValue,
-                    signedAmount: totalValue,
-                    formattedAmount: total,
+                    amount: realTimeTotals.total_value,
+                    signedAmount: realTimeTotals.total_value,
+                    formattedAmount: realTimeTotals.total,
                     label: 'Total',
                     type: 'total',
                     visible: true

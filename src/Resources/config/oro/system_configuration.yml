@@ -8,19 +8,19 @@ system_configuration:
             title: 'Settings'
 
     fields:
-        real_time.enable_backend:
+        real_time.enable:
             data_type: string
             ui_only: true
             type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
             options:
-                label: 'Enable Backend Prices'
+                label: 'Enable real time prices'
                 resettable: false
-        real_time.enable_frontend:
+        real_time.frontend_enable:
             data_type: string
             ui_only: true
             type: Oro\Bundle\ConfigBundle\Form\Type\ConfigCheckbox
             options:
-                label: 'Enable Frontend Prices'
+                label: 'Enable Real Time Prices From Frontend'
                 resettable: false
 
 
@@ -34,5 +34,5 @@ system_configuration:
                                 children:
                                     luminoslabs_realtime_price_settings:
                                         children:
-                                            - real_time.enable_backend
-                                            - real_time.enable_frontend
+                                            - real_time.enable
+                                            - real_time.frontend_enable

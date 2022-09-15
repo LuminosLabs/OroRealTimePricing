@@ -14,6 +14,7 @@ services:
       - '@oro_pricing.user_currency_manager'
       - '@oro_config.manager'
       - !tagged_iterator real_time.pricing.provider
+      - '@request_stack'
     calls:
       - [setMemoryCacheProvider, ['@oro_pricing.provider.product_price.cache']]
 

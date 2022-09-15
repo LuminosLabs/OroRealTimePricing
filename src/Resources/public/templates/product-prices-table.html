@@ -1,0 +1,29 @@
+<table class="product-prices__table">
+    <thead class="product-prices__thead">
+    <tr class="product-prices__tr">
+        <th style="width: 40%"
+            class="product-prices__th text-uppercase"><%- _.__('oro.pricing.qty') %>
+        </th>
+        <th style="width: 60%"
+            class="product-prices__th"><%- _.__('oro.pricing.unit_price') %>
+        </th>
+    </tr>
+    </thead>
+    <tbody class="product-prices__tbody" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+    <% _.each(prices, function(unitPrices, unit) { %>
+    <tr class="product-prices__tr">
+        <td colspan="2" class="product-prices__td">
+            <strong><%- _(unit).capitalize() %></strong>
+        </td>
+    </tr>
+    <% _.each(unitPrices, function(price) { %>
+    <tr class="product-prices__tr">
+        <td class="product-prices__td"><%- price.quantity %></td>
+        <td class="product-prices__td">
+            <%- formatter.formatCurrency(price.price, price.currency) %>
+        </td>
+    </tr>
+    <% }) %>
+    <% }) %>
+    </tbody>
+</table>

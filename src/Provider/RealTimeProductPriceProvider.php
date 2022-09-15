@@ -28,6 +28,7 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
         protected UserCurrencyManager          $currencyManager,
         protected ConfigManager                $configManager,
         iterable                               $apiProviders,
+        private RequestStack                   $requestStack
     )
     {
         $this->apiProvider = iterator_to_array($apiProviders)[0];
@@ -38,11 +39,34 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
      */
     public function isActive()
     {
-        return $this->configManager->get(
+        $frontendOnlyRealTimePricesRoutes = [
+            'oro_product_frontend_product_view',
+            'oro_frontend_root',
+            'oro_shopping_list_frontend_update',
+            'oro_shopping_list_frontend_index',
+            'oro_shopping_list_frontend_view',
+            'oro_checkout_frontend_checkout',
+            'oro_cms_frontend_page_view'
+        ];
+        $isFrontendRealTimePricingEnabled = $this->configManager->get(
+            Configuration::getConfigurationName(
+                Configuration::FRONTEND_ENABLE
+            )
+        );
+        $isBackendRealTimePricingEnabled = $this->configManager->get(
             Configuration::getConfigurationName(
                 Configuration::ENABLE
             )
         );
+
+        if ($isFrontendRealTimePricingEnabled && $isBackendRealTimePricingEnabled) {
+            $routeName = $this->requestStack->getMainRequest()->attributes->get('_route');
+            if (in_array($routeName, $frontendOnlyRealTimePricesRoutes)) {
+                return false;
+            }
+        }
+
+        return $isBackendRealTimePricingEnabled;
     }
 
     /**

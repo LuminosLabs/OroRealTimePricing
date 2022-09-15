@@ -23,6 +23,17 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
 
     protected ApiProviderInterface $apiProvider;
 
+    const FRONTEND_ONLY_ROUTES = [
+        'oro_product_frontend_product_view',
+        'oro_frontend_root',
+        'oro_shopping_list_frontend_update',
+        'oro_shopping_list_frontend_index',
+        'oro_shopping_list_frontend_view',
+        'oro_checkout_frontend_checkout',
+        'oro_cms_frontend_page_view',
+        'oro_product_frontend_product_index'
+    ];
+
     public function __construct(
         protected ProductPriceStorageInterface $priceStorage,
         protected UserCurrencyManager          $currencyManager,
@@ -39,34 +50,25 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
      */
     public function isActive()
     {
-        $frontendOnlyRealTimePricesRoutes = [
-            'oro_product_frontend_product_view',
-            'oro_frontend_root',
-            'oro_shopping_list_frontend_update',
-            'oro_shopping_list_frontend_index',
-            'oro_shopping_list_frontend_view',
-            'oro_checkout_frontend_checkout',
-            'oro_cms_frontend_page_view'
-        ];
-        $isFrontendRealTimePricingEnabled = $this->configManager->get(
+        $isFrontendEnabled = $this->configManager->get(
             Configuration::getConfigurationName(
                 Configuration::FRONTEND_ENABLE
             )
         );
-        $isBackendRealTimePricingEnabled = $this->configManager->get(
+        $isBackendEnabled = $this->configManager->get(
             Configuration::getConfigurationName(
                 Configuration::ENABLE
             )
         );
 
-        if ($isFrontendRealTimePricingEnabled && $isBackendRealTimePricingEnabled) {
-            $routeName = $this->requestStack->getMainRequest()->attributes->get('_route');
-            if (in_array($routeName, $frontendOnlyRealTimePricesRoutes)) {
-                return false;
-            }
+        $routeName = $this->requestStack->getMainRequest()->attributes->get('_route');
+        if ($isFrontendEnabled
+            && $isBackendEnabled
+            && in_array($routeName, self::FRONTEND_ONLY_ROUTES)) {
+            return false;
         }
 
-        return $isBackendRealTimePricingEnabled;
+        return $isBackendEnabled;
     }
 
     /**

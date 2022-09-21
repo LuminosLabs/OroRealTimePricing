@@ -28,9 +28,8 @@ define(function(require) {
                 return;
             }
 
-            if (options.ajaxRealTimePrices) {
-                this.model.set('updateRealTimePrices', true);
-            }
+            this.model.set('hasPricesTable', options.hasPricesTable);
+
 
             if (this.model.get('id')) {
                 this.storeId(this.model.get('id'));
@@ -42,7 +41,7 @@ define(function(require) {
 
         updatePrice: function(prices) {
             this.model.set('prices', prices);
-            if (this.model.has('updateRealTimePrices')) {
+            if (this.model.get('hasPricesTable')) {
                 this.subview('product-prices', new ProductPricesTableSubView({
                     autoRender: true,
                     el: $('table.product-prices__table'),

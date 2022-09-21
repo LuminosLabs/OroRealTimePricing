@@ -38,8 +38,8 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
         protected ProductPriceStorageInterface $priceStorage,
         protected UserCurrencyManager          $currencyManager,
         protected ConfigManager                $configManager,
-        iterable                               $apiProviders,
-        private RequestStack                   $requestStack
+        private RequestStack                   $requestStack,
+        iterable                               $apiProviders
     )
     {
         $this->apiProvider = iterator_to_array($apiProviders)[0];

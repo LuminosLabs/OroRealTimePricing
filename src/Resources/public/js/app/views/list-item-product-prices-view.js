@@ -18,7 +18,7 @@ define(function(require) {
         initialize: function(options) {
             BaseListItemProductPricesView.prototype.initialize.call(this, options);
 
-            if (!options.realTimePricesEnabled) {
+            if (!options.frontendRealTimePricesEnabled) {
                 return;
             }
 

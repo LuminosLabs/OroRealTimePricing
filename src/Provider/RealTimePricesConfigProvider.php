@@ -16,7 +16,7 @@ class RealTimePricesConfigProvider
     /**
      * @return bool
      */
-    public function isRealTimePricesEnable(): bool
+    public function isFrontendRealTimePricesEnable(): bool
     {
         return $this->configManager->get(
             Configuration::getConfigurationName(

@@ -3,6 +3,11 @@ define(function(require) {
 
     const BaseListItemProductPricesView = require('oropricing/js/app/views/list-item-product-prices-view');
     const routing = require('routing');
+    const $ = require('jquery');
+    const _ = require('underscore');
+    const BaseView = require('oroui/js/app/views/base/view');
+    const ListItemProductPricesSubView = require('oropricing/js/app/views/list-item-product-prices-subview');
+    const ProductPricesTableSubView = require('realtime/js/app/views/product-prices-table-subview');
 
     const ListItemProductPricesView = BaseListItemProductPricesView.extend({
         productIds: [],
@@ -10,6 +15,7 @@ define(function(require) {
         timeout: null,
 
         realTimePricesRoute: 'real_time_frontend_price',
+        
 
         constructor: function ListItemProductPricesView(options) {
             ListItemProductPricesView.__super__.constructor.call(this, options);
@@ -22,6 +28,9 @@ define(function(require) {
                 return;
             }
 
+            this.model.set('hasPricesTable', options.hasPricesTable);
+
+
             if (this.model.get('id')) {
                 this.storeId(this.model.get('id'));
             }
@@ -32,7 +41,13 @@ define(function(require) {
 
         updatePrice: function(prices) {
             this.model.set('prices', prices);
-
+            if (this.model.get('hasPricesTable')) {
+                this.subview('product-prices', new ProductPricesTableSubView({
+                    autoRender: true,
+                    el: $('table.product-prices__table'),
+                    model: this.model
+                }));
+            }
             this.render();
         },
 

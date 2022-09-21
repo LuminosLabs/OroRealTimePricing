@@ -23,11 +23,23 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
 
     protected ApiProviderInterface $apiProvider;
 
+    const FRONTEND_ONLY_ROUTES = [
+        'oro_product_frontend_product_view',
+        'oro_frontend_root',
+        'oro_shopping_list_frontend_update',
+        'oro_shopping_list_frontend_index',
+        'oro_shopping_list_frontend_view',
+        'oro_checkout_frontend_checkout',
+        'oro_cms_frontend_page_view',
+        'oro_product_frontend_product_index'
+    ];
+
     public function __construct(
         protected ProductPriceStorageInterface $priceStorage,
         protected UserCurrencyManager          $currencyManager,
         protected ConfigManager                $configManager,
-        iterable                               $apiProviders,
+        private RequestStack                   $requestStack,
+        iterable                               $apiProviders
     )
     {
         $this->apiProvider = iterator_to_array($apiProviders)[0];
@@ -38,11 +50,25 @@ class RealTimeProductPriceProvider implements ProductPriceProviderInterface
      */
     public function isActive()
     {
-        return $this->configManager->get(
+        $isFrontendEnabled = $this->configManager->get(
+            Configuration::getConfigurationName(
+                Configuration::FRONTEND_ENABLE
+            )
+        );
+        $isBackendEnabled = $this->configManager->get(
             Configuration::getConfigurationName(
                 Configuration::ENABLE
             )
         );
+
+        $routeName = $this->requestStack->getMainRequest()->attributes->get('_route');
+        if ($isFrontendEnabled
+            && $isBackendEnabled
+            && in_array($routeName, self::FRONTEND_ONLY_ROUTES)) {
+            return false;
+        }
+
+        return $isBackendEnabled;
     }
 
     /**

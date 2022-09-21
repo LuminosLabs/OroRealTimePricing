@@ -6,6 +6,8 @@ dynamic-imports:
 
 map:
   '*':
+    'oroproduct/templates/search-autocomplete.html': 'realtime/templates/search-autocomplete.html'
+
     'oropricing/js/app/views/list-item-product-prices-view': 'realtime/js/app/views/list-item-product-prices-view'
     'oropricing/js/app/components/totals-component': 'realtime/js/app/components/totals-component'
 

@@ -4,5 +4,5 @@ layout:
         themes: '@RealTime/layouts/blank/imports/oro_product_price/oro_product_price.html.twig'
     - '@setOption':
         id: __product_price_component
-        optionName: vars.realTimePricesEnabled
-        optionValue: '=data["real_time_prices_config_provider"].isRealTimePricesEnable()'
+        optionName: vars.frontendRealTimePricesEnabled
+        optionValue: '=data["real_time_prices_config_provider"].isFrontendRealTimePricesEnable()'

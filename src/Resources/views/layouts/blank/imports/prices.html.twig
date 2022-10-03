@@ -1,6 +1,7 @@
 {% block product_price_component %}
     {% if not is_configurable_product_type(product.type) or matrixFormType == 'none' %}
         {% set attr = layout_attr_defaults(attr, {
+            'data-page-component-init-on': 'asap',
             'data-page-component-module': 'oroui/js/app/components/view-component',
             '~data-page-component-options': {
                 view: 'oropricing/js/app/views/list-item-product-prices-view',
@@ -23,6 +24,53 @@
     {% else %}
         {{ block('product_price_not_found') }}
     {% endif %}
+{% endblock %}
+
+{% block product_price_listed %}
+    {# Clone js logic in package/commerce/src/Oro/Bundle/PricingBundle/Resources/public/templates/product/list-item-product-prices.html #}
+    {% set attr = layout_attr_defaults(attr, {
+        '~class': ' product-price__listed'
+    }) %}
+    <div {{ block('block_attributes') }}>
+        <span class="product-price__listed-label">{{ 'oro.pricing.frontend.pricelist.index.listed_price'|trans }}</span>
+        {% set listedPrice = productPrices|first.list_price %}
+        <span class="product-price__listed-box"
+              title="{{ 'oro.pricing.productprice.applicable_from'|trans({'%amount%': listedPrice.quantity})|e('html_attr') }}">
+            <span class="product-price__listed-value">{{ listedPrice.formatted_price }}</span>
+            <span> / </span>
+            <span class="product-price__unit">
+                <span class="product-price__unit-full">
+                    {{ listedPrice.formatted_unit }}
+                </span>
+                <span class="product-price__unit-short">
+                    {{ listedPrice.unit|oro_format_short_product_unit_label }}
+                </span>
+            </span>
+        </span>
+    </div>
+{% endblock %}
+
+{% block product_price_flyer %}
+    {# Clone js logic in package/commerce/src/Oro/Bundle/PricingBundle/Resources/public/templates/product/list-item-product-prices.html #}
+    {% set attr = layout_attr_defaults(attr, {
+        '~class': ' product-price__listed'
+    }) %}
+    <div {{ block('block_attributes') }}>
+        <span class="product-price__listed-label">Flyer Price</span>
+        {% set flyerPrice = productPrices|first.flyer_price %}
+        <span class="product-price__listed-box">
+            <span class="product-price__listed-value">{{ flyerPrice.formatted_price }}</span>
+            <span> / </span>
+            <span class="product-price__unit">
+                <span class="product-price__unit-full">
+                    {{ flyerPrice.formatted_unit }}
+                </span>
+                <span class="product-price__unit-short">
+                    {{ flyerPrice.unit|oro_format_short_product_unit_label }}
+                </span>
+            </span>
+        </span>
+    </div>
 {% endblock %}
 
 {% block product_price_table %}

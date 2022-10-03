@@ -1,2 +1,2 @@
 bundles:
-  - { name: Luminoslabs\OroRealTimePricing\RealTimeBundle, priority: 1000 }
+  - { name: Luminoslabs\OroRealTimePricing\RealTimeBundle, priority: 500 }

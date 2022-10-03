@@ -6,7 +6,3 @@ layout:
         id: __product_price_component
         optionName: vars.frontendRealTimePricesEnabled
         optionValue: '=data["real_time_prices_config_provider"].isFrontendRealTimePricesEnable()'
-    - '@add':
-        id: __product_price_flyer
-        blockType: block
-        parentId: __product_prices

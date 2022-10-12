@@ -53,6 +53,7 @@ class PricesHelper
             $dataGridPrices['line_items'][$productId] = [
                 'unit_price' => $this->numberFormatter->formatCurrency($priceValue, $currency),
                 'subtotal' => $this->numberFormatter->formatCurrency($subtotal, $currency),
+                'subtotal_value' => $subtotal 
             ];
         }
         $dataGridPrices['totals'] = [
